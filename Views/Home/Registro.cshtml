@@ -1,0 +1,130 @@
+﻿
+@{
+    ViewBag.Title = "Registro";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/bootstrap.min.css" rel="stylesheet">
+<link href="~/Content/font-awesome.css" rel="stylesheet">
+
+<link href="~/Content/animate.css" rel="stylesheet">
+<link href="~/Content/style.css" rel="stylesheet">
+<div class="navbar navbar-inverse navbar-fixed-top" style="background-color:#2F4050">
+    <div class="container" style="background-color:#2F4050">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li> <a href="@Url.Action("Index", "Home")">Login</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div div class=" loginscreen  animated fadeInDown">
+    <div class="col-md-8" style="margin: 0px 30%">
+
+        <div class="card">
+            <div>
+
+                <h2 class="logo-name" style="font-size:50px;">C &nbsp;R &nbsp; U &nbsp; D+</h2>
+
+            </div>
+            <div class="card-body">
+                <div id="Principal">
+                    <h3 class="text-capitalize">Registro</h3>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Usuario</label>
+                        <input type="text" class="form-control" id="Usuario" name="usuarioEntrar" aria-describedby="emailHelp">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Contraseña</label>
+                        <input type="password" class="form-control" name="password" id="Password">
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary col-md" onclick="InsertEmpleado()">Registrar</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<body class="primary-bg">
+
+</body>
+
+@section Styles {
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/toastrStyles")
+    @Styles.Render("~/plugins/sweetAlertStyles")
+}
+
+@section Scripts {
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/toastr")
+    @Scripts.Render("~/plugins/sweetAlert")
+
+<script type="text/javascript">
+
+    function InsertEmpleado() {
+            var Usuario = document.getElementById("Usuario").value;
+            var Password = document.getElementById("Password").value;
+
+
+            if (Usuario == "") {
+                $("#Usuario").css({ "border-color": "red" });
+            }
+
+            if (Password == "") {
+                $("#Password").css({ "border-color": "red" });
+            }
+            
+            InsertEmpleado1()
+        }
+
+
+        function InsertEmpleado1() {
+            var Usuario = document.getElementById("Usuario").value;
+            var Password = document.getElementById("Password").value;
+
+            usuario = JSON.stringify({ 'usuarioEntrar': Usuario, 'password': Password});
+
+            $.ajax({
+                contentType: 'application/json; charset=utf-8',
+                type: 'post',
+                url: '@Url.Action("InsertUsuarioLogin", "Consultas")',
+                data: usuario,
+                success: function (data) {
+                    document.getElementById("Usuario").value = "";
+                    document.getElementById("Password").value = "";
+                    toastr.success('Registrado', 'Exito!')
+
+                   toastr.options = {
+                       "closeButton": true,
+                       "debug": false,
+                       "progressBar": true,
+                       "positionClass": "toast-top-right",
+                       "onclick": null,
+                       "showDuration": "400",
+                       "hideDuration": "1000",
+                       "timeOut": "7000",
+                       "extendedTimeOut": "1000",
+                       "showEasing": "swing",
+                       "hideEasing": "linear",
+                       "showMethod": "fadeIn",
+                       "hideMethod": "fadeOut"
+                   }
+                },
+                failure: function (response) {
+                }
+            });
+
+        }
+
+</script>
+}

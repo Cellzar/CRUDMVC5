@@ -1,0 +1,433 @@
+﻿
+@{
+    ViewBag.Title = "Principal";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">@ViewBag.usuario </a></li>
+                <li><a data-toggle="modal" href="#modal-form">Agregar Contacto</a></li>
+                <li> <a href="@Url.Action("LogOut", "Consultas")">Salir</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="">
+    <br />
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content ">
+
+
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="ibox float-e-margins">
+
+                                <div class="ibox-content">
+                                    <div class="align-middle">
+
+                                    </div>
+                                    <br />
+                                    <div id="modal-form" class="modal fade" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header" style="background: #2F4050; color:white">
+                                                    <h3 class="m-t-none m-b text-center">Ingreso de contacto</h3>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="row">
+
+                                                        <br />
+                                                        <div class="col-sm-6">
+
+                                                            <div role="form">
+                                                                <div class="form-group"><label>Nombre</label> <input type="text" id="PrimerNombreTxt" class="form-control"></div>
+                                                                <div class="form-group"><label>Primer Apellido</label> <input type="text" id="PrimerApellidoTxt" class="form-control"></div>
+
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6 ">
+                                                            <div role="form">
+                                                                <div class="form-group"><label>Identificación</label> <input type="text" id="IdentificacionTxt" class="form-control"></div>
+                                                                <div class="form-group"><label>Segundo Apellido</label> <input type="text" id="SegundoApellidoTxt" class="form-control"></div>
+
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6 ">
+                                                            <div role="form">
+                                                                <div class="form-group"><label>Fecha de nacimiento</label> <input type="date" id="FechaTxt" class="form-control"></div>
+                                                                <div class="form-group"><label>Telefono</label> <input type="tel" id="TelefonoTxt" class="form-control"></div>
+
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6 ">
+                                                            <div role="form">
+                                                                <div class="form-group"><label>Dirección</label> <input type="text" id="DireccionTxt" class="form-control"></div>
+                                                                <div class="form-group"><label>Barrio</label> <input type="text" id="BarrioTxt" class="form-control"></div>
+
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-2">
+                                                            <button class="btn btn-sm btn-primary pull-right m-t-n-xs" type="submit" onclick="InsertEmpleado()"><strong>Guardar</strong></button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                            </div>
+                            <div class="">
+                                <div id="Mostrar">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modal-form1" class="modal fade" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background: #2F4050; color:white">
+                    <h3 class="m-t-none m-b text-center">Información de contacto</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="wrapper wrapper-content animated fadeInRight">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="ibox float-e-margins">
+                                    <div class="ibox-title">
+                                        <h5>Mostrar Empleado</h5>
+                                    </div>
+                                    <div class="ibox-content">
+
+                                        <div id="ContenidoEmpleado">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="Tabla" class="bg-info" style="padding:5% 0px;margin: 0px -7%;">
+
+    </div>
+</div>
+
+@section Styles {
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/toastrStyles")
+    @Styles.Render("~/plugins/sweetAlertStyles")
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/toastr")
+    @Scripts.Render("~/plugins/sweetAlert")
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            MostrarTodos();
+
+        });
+
+        function MostrarTodos() {
+            $.ajax({
+               contentType: 'application/json; charset=utf-8',
+               type: 'post',
+               url: '@Url.Action("MostrarUsuarios", "Consultas")',
+               success: function (data) {
+                console.log(data)
+               $("#Tabla").html(data)
+                    $('.dataTables-example').DataTable({
+                pageLength: 25,
+                buttons: [
+
+                    {
+                        customize: function (win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                    .addClass('compact')
+                                    .css('font-size', 'inherit');
+                        }
+                    }
+                ]
+
+                    });
+                   var numeros = $(".dataTables_length").parent("div");
+                   var buscador = $(".dataTables_filter").parent("div").removeClass("col-sm-6").addClass("col-sm-1");
+                   numeros.remove();
+               },
+               failure: function (response) {
+               }
+            });
+        }
+
+
+        function InsertEmpleado() {
+            var PrimerNombreTxt = document.getElementById("PrimerNombreTxt").value;
+            var PrimerApellidoTxt = document.getElementById("PrimerApellidoTxt").value;
+            var IdentificacionTxt = document.getElementById("IdentificacionTxt").value;
+            var SegundoApellidoTxt = document.getElementById("SegundoApellidoTxt").value;
+            var FechaTxt = document.getElementById("FechaTxt").value;
+            var TelefonoTxt = document.getElementById("TelefonoTxt").value;
+            var DireccionTxt = document.getElementById("DireccionTxt").value;
+            var BarrioTxt = document.getElementById("BarrioTxt").value;
+
+
+            if (PrimerNombreTxt == "") {
+                $("#PrimerNombreTxt").css({ "border-color": "red" });
+            }
+
+            if (PrimerApellidoTxt == "") {
+                $("#PrimerApellidoTxt").css({ "border-color": "red" });
+            }
+            if (IdentificacionTxt == "") {
+                $("#IdentificacionTxt").css({ "border-color": "red" });
+            }
+            if (SegundoApellidoTxt == "") {
+                $("#SegundoApellidoTxt").css({ "border-color": "red" });
+            }
+            if (FechaTxt == "") {
+                $("#FechaTxt").css({ "border-color": "red" });
+            }
+            if (DireccionTxt == "") {
+                $("#DireccionTxt").css({ "border-color": "red" });
+            }
+            if (BarrioTxt == "") {
+                $("#BarrioTxt").css({ "border-color": "red" });
+            }
+
+            if (TelefonoTxt == "") {
+                $("#TelefonoTxt").css({ "border-color": "red" });
+            }
+            InsertEmpleado1()
+        }
+
+
+        function InsertEmpleado1() {
+            var PrimerNombreTxt = document.getElementById("PrimerNombreTxt").value;
+            var PrimerApellidoTxt = document.getElementById("PrimerApellidoTxt").value;
+            var IdentificacionTxt = document.getElementById("IdentificacionTxt").value;
+            var SegundoApellidoTxt = document.getElementById("SegundoApellidoTxt").value;
+            var FechaTxt = document.getElementById("FechaTxt").value;
+            var TelefonoTxt = document.getElementById("TelefonoTxt").value;
+            var DireccionTxt = document.getElementById("DireccionTxt").value;
+            var BarrioTxt = document.getElementById("BarrioTxt").value;
+
+            usuario = JSON.stringify({ 'Nombre': PrimerNombreTxt, 'Identificacion': IdentificacionTxt, 'PrimerApellido': PrimerApellidoTxt, 'SegundoApellido': SegundoApellidoTxt, 'FechaNacimiento': FechaTxt, 'Telefono': TelefonoTxt, 'Direccion': DireccionTxt, 'Barrio': BarrioTxt });
+
+            $.ajax({
+                contentType: 'application/json; charset=utf-8',
+                type: 'post',
+                url: '@Url.Action("InsertUsuario", "Consultas")',
+                data: usuario,
+                success: function (data) {
+                    document.getElementById("PrimerNombreTxt").value = "";
+                    document.getElementById("PrimerApellidoTxt").value = "";
+                    document.getElementById("IdentificacionTxt").value = "";
+                    document.getElementById("SegundoApellidoTxt").value = "";
+                    document.getElementById("FechaTxt").value = "";
+                    document.getElementById("TelefonoTxt").value = "";
+                    document.getElementById("DireccionTxt").value = "";
+                    document.getElementById("BarrioTxt").value;
+
+                    $("#modal-form").modal('hide');
+                    toastr.success('Ingresado', 'Exito!')
+
+                   toastr.options = {
+                       "closeButton": true,
+                       "debug": false,
+                       "progressBar": true,
+                       "positionClass": "toast-top-right",
+                       "onclick": null,
+                       "showDuration": "400",
+                       "hideDuration": "1000",
+                       "timeOut": "7000",
+                       "extendedTimeOut": "1000",
+                       "showEasing": "swing",
+                       "hideEasing": "linear",
+                       "showMethod": "fadeIn",
+                       "hideMethod": "fadeOut"
+                   }
+                    MostrarTodos()
+                },
+                failure: function (response) {
+                }
+            });
+
+        }
+
+        function Detalle(Id) {
+
+            $.ajax({
+                type: 'post',
+                data: { 'id': Id},
+                url: '@Url.Action("Mostrar", "Consultas")',
+                success: function (data) {
+                    $("#ContenidoEmpleado").html(data)
+                },
+                failure: function (response) {
+                }
+            });
+        }
+        function Update(Id) {
+            var Id = Id;
+           var PrimerNombreTxt = document.getElementById("PrimerNombreTxt1").value;
+            var PrimerApellidoTxt = document.getElementById("PrimerApellidoTxt1").value;
+            var IdentificacionTxt = document.getElementById("IdentificacionTxt1").value;
+            var SegundoApellidoTxt = document.getElementById("SegundoApellidoTxt1").value;
+            var FechaTxt = document.getElementById("FechaTxt1").value;
+            var TelefonoTxt = document.getElementById("TelefonoTxt1").value;
+            var DireccionTxt = document.getElementById("DireccionTxt1").value;
+            var BarrioTxt = document.getElementById("BarrioTxt1").value;
+
+
+            if (PrimerNombreTxt == "") {
+                $("#PrimerNombreTxt1").css({ "border-color": "red" });
+            }
+
+            if (PrimerApellidoTxt == "") {
+                $("#PrimerApellidoTxt1").css({ "border-color": "red" });
+            }
+            if (IdentificacionTxt == "") {
+                $("#IdentificacionTxt1").css({ "border-color": "red" });
+            }
+            if (SegundoApellidoTxt == "") {
+                $("#SegundoApellidoTxt1").css({ "border-color": "red" });
+            }
+            if (FechaTxt == "") {
+                $("#FechaTxt1").css({ "border-color": "red" });
+            }
+            if (DireccionTxt == "") {
+                $("#DireccionTxt1").css({ "border-color": "red" });
+            }
+            if (BarrioTxt == "") {
+                $("#BarrioTxt1").css({ "border-color": "red" });
+            }
+
+            if (TelefonoTxt == "") {
+                $("#TelefonoTxt1").css({ "border-color": "red" });
+            }
+            Update1(Id)
+        }
+        function Update1(Id) {
+             var PrimerNombreTxt = document.getElementById("PrimerNombreTxt1").value;
+            var PrimerApellidoTxt = document.getElementById("PrimerApellidoTxt1").value;
+            var IdentificacionTxt = document.getElementById("IdentificacionTxt1").value;
+            var SegundoApellidoTxt = document.getElementById("SegundoApellidoTxt1").value;
+            var FechaTxt = document.getElementById("FechaTxt1").value;
+            var TelefonoTxt = document.getElementById("TelefonoTxt1").value;
+            var DireccionTxt = document.getElementById("DireccionTxt1").value;
+            var BarrioTxt = document.getElementById("BarrioTxt1").value;
+
+            usuario = JSON.stringify({ 'Nombre': PrimerNombreTxt, 'Identificacion': IdentificacionTxt, 'PrimerApellido': PrimerApellidoTxt, 'SegundoApellido': SegundoApellidoTxt, 'FechaNacimiento': FechaTxt, 'Telefono': TelefonoTxt, 'Direccion': DireccionTxt, 'Barrio': BarrioTxt, 'id':Id });
+            $.ajax({
+                contentType: 'application/json; charset=utf-8',
+                type: 'post',
+                data: usuario,
+                url: '@Url.Action("Update", "Consultas")',
+                success: function (data) {
+                    $("#modal-form1").modal('hide');
+                    toastr.success('Actualizado', 'Exito!')
+
+                   toastr.options = {
+                       "closeButton": true,
+                       "debug": false,
+                       "progressBar": true,
+                       "positionClass": "toast-top-right",
+                       "onclick": null,
+                       "showDuration": "400",
+                       "hideDuration": "1000",
+                       "timeOut": "7000",
+                       "extendedTimeOut": "1000",
+                       "showEasing": "swing",
+                       "hideEasing": "linear",
+                       "showMethod": "fadeIn",
+                       "hideMethod": "fadeOut"
+                   }
+                    MostrarTodos();
+                },
+                failure: function (response) {
+                }
+            });
+
+        }
+
+        function Delete(Id) {
+            swal({
+        title: "¿Estas seguro?",
+        text: "De borrar este archivo!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Si, Quiero!",
+        closeOnConfirm: false
+        }, function () {
+                    swal("Borrado!", "El contacto ha sido borrado.", "success");
+                    $.ajax({
+                type: 'post',
+                data: { 'id': Id},
+                url: '@Url.Action("Delete", "Consultas")',
+                success: function (data) {
+                    toastr.warning('Borrado', 'Exito!')
+
+                    toastr.options = {
+                        "closeButton": true,
+                        "debug": false,
+                        "progressBar": true,
+                        "positionClass": "toast-top-right",
+                        "onclick": null,
+                        "showDuration": "400",
+                        "hideDuration": "1000",
+                        "timeOut": "7000",
+                        "extendedTimeOut": "1000",
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut"
+                    }
+                    MostrarTodos();
+
+                },
+                failure: function (response) {
+                }
+            });
+        });
+            
+        }
+    </script>
+
+
+}
